@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Цифровой образовательный ресурс РК — Топография (полный курс)</title>
+  <style>
+    /* Базовые стили (без изменений) */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef4f8; color: #1a2a3a; padding: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; background: #ffffff; box-shadow: 0 10px 35px rgba(0,0,0,0.12); border-radius: 16px; padding: 30px 35px; }
+    .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 4px solid #0097b2; padding-bottom: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+    .header-left { display: flex; align-items: center; gap: 18px; }
+    .header-left img { height: 70px; }
+    .header-title h1 { font-size: 2.2rem; color: #003b4a; letter-spacing: 0.5px; }
+    .header-title h1 small { display: block; font-size: 1rem; color: #00758a; font-weight: 400; letter-spacing: 1.5px; }
+    .header-right { background: #0097b2; color: white; padding: 10px 24px; border-radius: 40px; font-weight: 600; font-size: 0.95rem; text-align: center; box-shadow: 0 4px 8px rgba(0,151,178,0.3); }
+    .toc { background: #e6f4f7; padding: 20px 25px; border-radius: 12px; margin-bottom: 40px; }
+    .toc h2 { color: #003b4a; border-bottom: 2px solid #0097b2; padding-bottom: 8px; margin-bottom: 15px; font-size: 1.8rem; display: flex; justify-content: space-between; align-items: center; }
+    .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px 20px; }
+    .toc-grid a { display: block; color: #00566b; text-decoration: none; font-weight: 500; padding: 4px 8px; border-radius: 4px; transition: 0.15s; }
+    .toc-grid a:hover { background: #cce4ea; color: #002b36; }
+    .toc-grid a .num { font-weight: 700; color: #00758a; margin-right: 6px; }
+    .section { margin-bottom: 40px; border-left: 4px solid #0097b2; padding-left: 25px; }
+    .section h2 { font-size: 1.9rem; color: #003b4a; margin-bottom: 18px; border-bottom: 1px dashed #b3d9e3; padding-bottom: 5px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .section h2 .badge { background: #0097b2; color: white; font-size: 0.8rem; padding: 2px 16px; border-radius: 30px; font-weight: 400; }
+    .section .desc { color: #2a4a5a; margin-bottom: 18px; font-style: italic; font-size: 1.05rem; }
+    .lesson-list { display: flex; flex-direction: column; gap: 8px; }
+    .lesson-item { background: #f8fcfe; border-radius: 8px; border: 1px solid #e0edf2; overflow: hidden; transition: border-color 0.2s; cursor: pointer; }
+    .lesson-item:hover { border-color: #0097b2; }
+    .lesson-header { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; background: #f8fcfe; transition: background 0.15s; flex-wrap: wrap; }
+    .lesson-item:hover .lesson-header { background: #f0f8fb; }
+    .lesson-header .num { font-weight: 700; color: #00758a; min-width: 55px; font-size: 0.95rem; }
+    .lesson-header .name { flex: 1; color: #1a2a3a; font-weight: 500; }
+    .lesson-header .type { font-size: 0.7rem; font-weight: 700; padding: 3px 14px; border-radius: 30px; text-transform: uppercase; letter-spacing: 0.4px; background: #d9eaf0; color: #00566b; }
+    .lesson-header .type.lecture { background: #c9e2e8; color: #004c5e; }
+    .lesson-header .type.practice { background: #d4e8d9; color: #1e5a3b; }
+    .lesson-header .type.srsp { background: #f0e1c7; color: #7a5d2e; }
+    .lesson-header .toggle-icon { margin-left: auto; font-size: 1.2rem; color: #00758a; transition: transform 0.3s; }
+    .lesson-item.open .toggle-icon { transform: rotate(180deg); }
+    .lesson-content { display: none; padding: 15px 20px 20px 20px; border-top: 1px solid #ddeef4; background: #ffffff; font-size: 0.98rem; line-height: 1.7; color: #1e3a48; }
+    .lesson-item.open .lesson-content { display: block; }
+    .lesson-content strong { color: #003b4a; }
+    .lesson-content ul, .lesson-content ol { margin: 8px 0 8px 25px; }
+    .lesson-content li { margin-bottom: 4px; }
+    .lesson-content .formula { background: #eef7fa; padding: 6px 15px; border-radius: 6px; font-family: 'Courier New', monospace; margin: 8px 0; display: inline-block; }
+    .lesson-content .task-box { background: #f4f9fc; border-left: 4px solid #0097b2; padding: 12px 18px; margin: 12px 0; border-radius: 4px; }
+    .summary { margin-top: 45px; background: #eef7fa; border-radius: 14px; padding: 22px 30px; border: 1px solid #b3d9e3; }
+    .summary h3 { color: #003b4a; font-size: 1.5rem; margin-bottom: 12px; }
+    .summary table { width: 100%; max-width: 400px; border-collapse: collapse; font-size: 1rem; }
+    .summary table th, .summary table td { padding: 8px 18px; border: 1px solid #b3d9e3; text-align: center; }
+    .summary table th { background: #0097b2; color: white; font-weight: 600; }
+    .summary table td { background: white; }
+    .summary .total { font-weight: 700; color: #003b4a; }
+    .toggle-all-btn { background: #0097b2; color: white; border: none; padding: 8px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 6px rgba(0,151,178,0.3); margin-left: 15px; }
+    .toggle-all-btn:hover { background: #00758a; transform: scale(1.02); }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #b3d9e3; text-align: center; color: #4a6a7a; font-size: 0.9rem; }
+    .footer img { height: 28px; vertical-align: middle; margin: 0 6px; }
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .header { flex-direction: column; align-items: start; gap: 10px; }
+      .header-title h1 { font-size: 1.6rem; }
+      .header-left img { height: 50px; }
+      .toc-grid { grid-template-columns: 1fr; }
+      .lesson-header { flex-wrap: wrap; gap: 6px; }
+      .lesson-header .toggle-icon { margin-left: 0; }
+      .section { padding-left: 15px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+  <!-- ШАПКА (без изменений) -->
+  <header class="header">
+    <div class="header-left">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230097b2'/%3E%3Ccircle cx='50' cy='50' r='40' fill='%23f9c20e'/%3E%3Cg fill='%230097b2'%3E%3Ccircle cx='30' cy='30' r='6'/%3E%3Ccircle cx='70' cy='30' r='6'/%3E%3Ccircle cx='30' cy='70' r='6'/%3E%3Ccircle cx='70' cy='70' r='6'/%3E%3C/g%3E%3C/svg%3E" alt="РК">
+      <div class="header-title">
+        <h1>Цифровой образовательный ресурс <small>Республики Казахстан</small></h1>
+      </div>
+    </div>
+    <div class="header-right">
+      📚 Топография<br>
+      <span style="font-weight:300;font-size:0.8rem;">Учебно-методический комплекс</span>
+    </div>
+  </header>
+
+  <!-- ОГЛАВЛЕНИЕ -->
+  <section class="toc">
+    <h2>
+      📖 Содержание
+      <button class="toggle-all-btn" onclick="toggleAll()">Развернуть всё</button>
+    </h2>
+    <div class="toc-grid" id="tocLinks">
+      <a href="#sec1"><span class="num">1.</span> Введение</a>
+      <a href="#sec2"><span class="num">2.</span> Масштабы</a>
+      <a href="#sec3"><span class="num">3.</span> Рельеф</a>
+      <a href="#sec4"><span class="num">4.</span> Ориентирование</a>
+      <a href="#sec5"><span class="num">5.</span> Геодез. задачи</a>
+      <a href="#sec6"><span class="num">6.</span> Погрешности</a>
+      <a href="#sec7"><span class="num">7.</span> Теодолитная съёмка</a>
+      <a href="#sec8"><span class="num">8.</span> Нивелирование</a>
+      <a href="#sec9"><span class="num">9.</span> Тахеометрия</a>
+      <a href="#sec10"><span class="num">10.</span> Сети и номенклатура</a>
+      <a href="#sec11"><span class="num">11.</span> ТБ</a>
+    </div>
+  </section>
+
+  <!-- ========= РАЗДЕЛ 1 ========= -->
+  <section class="section" id="sec1">
+    <h2>1. Введение и общие понятия <span class="badge">зан. 1–4</span></h2>
+    <div class="desc">Основы топографии, предмет, задачи, элементы измерений, карты, планы, профили, высоты.</div>
+    <div class="lesson-list" data-section="1">
+      <!-- Занятие 1 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="1">
+        <div class="lesson-header"><span class="num">1</span><span class="name">Введение. Предмет и задачи топографии</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>1. Предмет топографии</strong><br>
+          Топография (от греч. τόπος — место и γράφω — пишу) — это научная дисциплина, изучающая методы детального изображения земной поверхности на планах, картах и профилях, а также способы измерений на местности для определения взаимного положения точек.</p>
+          <p><strong>2. Связь с другими науками</strong><br>
+          Топография опирается на геодезию (науку о форме и размерах Земли), картографию (создание карт), землеустройство, строительство и военное дело. Она служит основой для проектирования дорог, зданий, гидротехнических сооружений и земельного кадастра.</p>
+          <p><strong>3. Основные задачи топографии</strong></p>
+          <ul>
+            <li><strong>Измерительные работы</strong> — определение горизонтальных и вертикальных углов, расстояний, превышений с помощью геодезических приборов.</li>
+            <li><strong>Составление карт и планов</strong> — графическое отображение ситуации (объектов местности) и рельефа (форм земной поверхности).</li>
+            <li><strong>Решение инженерных задач</strong> — расчёт уклонов, площадей, объёмов земляных работ, вынос проектов в натуру.</li>
+            <li><strong>Мониторинг деформаций</strong> — контроль за оседанием зданий, смещением оползней и т.д.</li>
+          </ul>
+          <p><strong>4. Принцип «от общего к частному»</strong><br>
+          Все топографические работы строятся на базе государственной геодезической сети (ГГС). Сначала определяются координаты опорных точек с высокой точностью, затем от них развиваются съёмочные сети для детальной съёмки.</p>
+          <p><strong>5. Этапы топографической съёмки</strong></p>
+          <ol>
+            <li><strong>Полевые работы</strong> — измерение углов, линий, превышений, ведение журналов.</li>
+            <li><strong>Камеральная обработка</strong> — вычисление координат, высот, построение планов и профилей.</li>
+            <li><strong>Анализ и использование</strong> — передача заказчику в бумажном или электронном виде.</li>
+          </ol>
+          <p>Топография тесно связана с метрологией: все измерения должны выполняться с установленной точностью (например, относительная погрешность 1:1000 для линейных измерений).</p>
+        </div>
+      </div>
+      <!-- Занятие 2 (СРСП) — оставляем кратко -->
+      <div class="lesson-item" data-lesson="2"><div class="lesson-header"><span class="num">2</span><span class="name">Элементы измерений на местности</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Основные элементы:</strong> горизонтальное проложение (проекция расстояния на горизонтальную плоскость), вертикальный угол (угол наклона), превышение (разность высот). Измерения делятся на линейные (рулетками, дальномерами) и угловые (теодолитами). Точность характеризуется средней квадратической ошибкой.</p></div></div>
+      <!-- Занятие 3 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="3">
+        <div class="lesson-header"><span class="num">3</span><span class="name">Карта, план, профиль</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>1. План местности</strong><br>
+          План — это чертёж, изображающий в уменьшенном виде горизонтальную проекцию участка местности без учёта кривизны Земли. Планы составляются для территорий площадью до 20×20 км (масштабы 1:500, 1:1000, 1:2000, 1:5000). На плане все объекты (дороги, здания, реки) показываются в ортогональной проекции (вид сверху). Ориентация плана обычно — север вверх.</p>
+          <p><strong>2. Топографическая карта</strong><br>
+          Карта — это уменьшенное, обобщённое изображение земной поверхности, построенное в определённой картографической проекции (например, равноугольной проекции Гаусса–Крюгера). На картах учитывается сферичность Земли, и они имеют разграфку на листы по номенклатуре. Масштабы карт: 1:10 000, 1:25 000, 1:50 000 и мельче. Карты содержат координатные сетки (километровые) и позволяют определять географические и прямоугольные координаты.</p>
+          <p><strong>Различия плана и карты:</strong></p>
+          <ul>
+            <li><strong>Масштаб</strong> — планы крупнее (1:5000 и крупнее), карты — мельче.</li>
+            <li><strong>Проекция</strong> — план — горизонтальная проекция без искажений, карта — с искажениями, но математически строгая.</li>
+            <li><strong>Геодезическая основа</strong> — план может не иметь координатной сетки, карта обязательно имеет.</li>
+          </ul>
+          <p><strong>3. Профиль местности</strong><br>
+          Профиль — это чертёж, представляющий собой вертикальный разрез земной поверхности по заданной линии (трассе). Он показывает изменение высот вдоль линии. Профили бывают <strong>продольные</strong> (вдоль оси дороги) и <strong>поперечные</strong> (перпендикулярно оси). Масштабы профиля: горизонтальный обычно мельче (например, 1:2000), вертикальный — крупнее (1:200) для наглядности перепадов высот. Профили необходимы при проектировании линейных сооружений (дорог, трубопроводов, каналов).</p>
+          <p><strong>Пример построения профиля:</strong> по отметкам пикетов (точек через 100 м) и плюсовых точек наносят на миллиметровку горизонтальные и вертикальные координаты, затем соединяют ломаной линией.</p>
+        </div>
+      </div>
+      <!-- Занятие 4 (СРСП) -->
+      <div class="lesson-item" data-lesson="4"><div class="lesson-header"><span class="num">4</span><span class="name">Высоты точек и превышения</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Абсолютная высота</strong> — отсчитывается от уровня Балтийского моря (нуль Кронштадтского футштока). <strong>Относительная высота</strong> — разность высот между двумя точками. <strong>Превышение (h)</strong> = H₂ – H₁. Способы определения: геометрическое нивелирование, тригонометрическое (тахеометрией), барометрическое.</p></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 2 -->
+  <section class="section" id="sec2">
+    <h2>2. Масштабы и планы <span class="badge">зан. 5–7</span></h2>
+    <div class="desc">Виды масштабов, построение, вычисления, поперечный масштаб.</div>
+    <div class="lesson-list" data-section="2">
+      <!-- Занятие 5 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="5">
+        <div class="lesson-header"><span class="num">5</span><span class="name">Назначение и виды масштабов</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Масштаб</strong> — это отношение длины линии на плане (карте) к длине соответствующей линии на местности. Он определяет степень уменьшения изображения.</p>
+          <p><strong>Виды масштабов:</strong></p>
+          <ul>
+            <li><strong>Численный</strong> — записывается в виде дроби 1/М, где М — знаменатель масштаба. Пример: 1:1000 означает, что 1 см на плане равен 1000 см (10 м) на местности. Чем меньше знаменатель, тем крупнее масштаб.</li>
+            <li><strong>Именованный</strong> — словесное пояснение: «в 1 см — 10 м». Используется для наглядности.</li>
+            <li><strong>Линейный</strong> — графический масштаб в виде отрезка, разделённого на равные части (сантиметры), подписанные соответствующими расстояниями на местности. Позволяет измерять длины без вычислений.</li>
+            <li><strong>Поперечный</strong> — более точный графический масштаб, позволяющий отсчитывать сотые доли основания. Основание обычно 2 см, делится на 10 частей, а также на 10 по высоте с наклонными линиями (трансверсалями), что даёт точность 0,02 см на плане.</li>
+          </ul>
+          <p><strong>Точность масштаба</strong> — это расстояние на местности, соответствующее 0,1 мм на плане (разрешающая способность глаза). Для масштаба 1:1000 точность = 0,1 мм × 1000 = 0,1 м. Это означает, что объекты размером менее 0,1 м на таком плане изобразить невозможно.</p>
+          <p><strong>Выбор масштаба</strong> зависит от назначения съёмки и требуемой детальности. Для строительных чертежей используют 1:500, для генпланов — 1:1000–1:2000, для земельного кадастра — 1:2000–1:5000.</p>
+          <p><strong>Пример:</strong> если на плане 1:2000 расстояние между точками 12,5 см, то на местности оно равно 12,5 × 2000 = 25000 см = 250 м.</p>
+        </div>
+      </div>
+      <!-- Занятие 6 (Практика) -->
+      <div class="lesson-item" data-lesson="6"><div class="lesson-header"><span class="num">6</span><span class="name">Практическое занятие №1: Вычисление масштабов</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Задачи:</strong></div><ol><li>Переведите численный масштаб 1:25000 в именованный.</li><li>Определите численный масштаб, если в 1 см на плане соответствует 50 м на местности.</li><li>Найдите длину отрезка на плане 1:2000, если на местности расстояние 340 м.</li><li>Оцените точность масштаба 1:500 и 1:2000.</li></ol></div></div>
+      <!-- Занятие 7 (Практика) -->
+      <div class="lesson-item" data-lesson="7"><div class="lesson-header"><span class="num">7</span><span class="name">Практическое занятие №2: Построение поперечного масштаба</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Цель:</strong> научиться строить и использовать поперечный масштаб.</div><ul><li>Начертите основание 2 см, разделите на 10 частей (по 2 мм).</li><li>Выполните вертикальные и наклонные линии для получения сотых долей.</li><li>Измерьте три заданных отрезка и вычислите их длину на местности.</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 3 -->
+  <section class="section" id="sec3">
+    <h2>3. Рельеф и условные знаки <span class="badge">зан. 8–11</span></h2>
+    <div class="desc">Изображение ситуации и рельефа, условные знаки, горизонтали, чтение карт.</div>
+    <div class="lesson-list" data-section="3">
+      <!-- Занятие 8 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="8">
+        <div class="lesson-header"><span class="num">8</span><span class="name">Изображение ситуации и рельефа. Условные знаки</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Условные знаки</strong> — это графические символы, используемые на картах и планах для обозначения объектов местности. Они делятся на три группы:</p>
+          <ul>
+            <li><strong>Масштабные (контурные)</strong> — изображают объекты, размеры которых можно выразить в масштабе карты (леса, пашни, озёра). Их площадь может быть измерена.</li>
+            <li><strong>Внемасштабные (точечные)</strong> — показывают объекты, которые не могут быть выражены в масштабе (колодцы, памятники, столбы). Их местоположение привязывается к определённой точке.</li>
+            <li><strong>Линейные</strong> — дороги, реки, линии электропередач. Они имеют протяжённость, но ширина может быть условной.</li>
+          </ul>
+          <p><strong>Пояснительные подписи</strong> дают дополнительные характеристики (например, порода деревьев, ширина дороги, глубина реки).</p>
+          <p><strong>Требования к условным знакам:</strong> наглядность, лёгкость запоминания, единообразие для всех карт (стандартизация). В Казахстане применяются знаки, утверждённые ГУГК (Главное управление геодезии и картографии).</p>
+          <p><strong>Изображение рельефа</strong> — основной способ — горизонтали (изогипсы). Горизонталь — это линия, соединяющая точки с одинаковой высотой. Расстояние по высоте между соседними горизонталями называется <strong>высотой сечения рельефа</strong>. Она зависит от масштаба карты и характера рельефа (для равнин — 1 м, для гор — 10 м и более).</p>
+          <p>Для лучшего восприятия горизонтали подписывают (отметки высот), а для указания направления ската используют <strong>бергштрихи</strong> — короткие чёрточки, направленные в сторону понижения.</p>
+          <p><strong>Основные формы рельефа:</strong> гора (холм), котловина (впадина), хребет, лощина, седловина. Их распознают по рисунку горизонталей (замкнутые контуры, языкообразные выступы).</p>
+          <p><strong>Задачи, решаемые по горизонталям:</strong> определение высот точек, вычисление уклонов, построение профилей, расчёт объёмов земляных работ.</p>
+        </div>
+      </div>
+      <!-- Занятие 9 (СРСП) -->
+      <div class="lesson-item" data-lesson="9"><div class="lesson-header"><span class="num">9</span><span class="name">Изображение рельефа на плоскости. Задачи по горизонталям</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Горизонталь</strong> — линия равных высот. <strong>Высота сечения</strong> — расстояние по высоте между горизонталями. Формы: гора, котловина, хребет, лощина, седловина. Бергштрихи указывают скат. Интерполяция — определение высот точек между горизонталями.</p></div></div>
+      <!-- Занятие 10 (Практика) -->
+      <div class="lesson-item" data-lesson="10"><div class="lesson-header"><span class="num">10</span><span class="name">Практическое занятие №3: Чтение карты</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>План:</strong></div><ul><li>По карте 1:25000 определите типы рельефа.</li><li>Выпишите 10 условных знаков с расшифровкой.</li><li>Составьте описание местности по маршруту.</li><li>Определите высоты двух точек и расстояние между ними.</li></ul></div></div>
+      <!-- Занятие 11 (Практика) -->
+      <div class="lesson-item" data-lesson="11"><div class="lesson-header"><span class="num">11</span><span class="name">Практическое занятие №4: Определение уклонов и отметок</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Задания:</strong></div><ul><li>Интерполяция отметок.</li><li>Вычисление уклона i = h / d (d — заложение).</li><li>Построение графика заложений.</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 4 -->
+  <section class="section" id="sec4">
+    <h2>4. Ориентирование и координаты <span class="badge">зан. 12–15</span></h2>
+    <div class="desc">Азимуты, румбы, дирекционные углы, координаты, площади.</div>
+    <div class="lesson-list" data-section="4">
+      <!-- Занятие 12 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="12">
+        <div class="lesson-header"><span class="num">12</span><span class="name">Ориентирование линий. Географический азимут и румб</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Ориентирование</strong> — это определение направления линии относительно меридиана или другого исходного направления. В топографии используют три основных угла: истинный азимут, магнитный азимут и дирекционный угол.</p>
+          <p><strong>Истинный (географический) азимут (А)</strong> — горизонтальный угол, отсчитываемый по ходу часовой стрелки от северного направления истинного (географического) меридиана до направления на предмет. Измеряется от 0° до 360°.</p>
+          <p><strong>Магнитный азимут (Ам)</strong> — аналогично, но от северного направления магнитного меридиана (указывает компас). Разница между истинным и магнитным азимутами называется <strong>магнитным склонением (δ)</strong>. Склонение может быть восточным (положительным) или западным (отрицательным). Связь: А = Ам + δ (с учётом знака).</p>
+          <p><strong>Румб (r)</strong> — острый угол между направлением линии и ближайшим (северным или южным) направлением меридиана. Румб измеряется от 0° до 90° и сопровождается названием четверти (СВ, ЮВ, ЮЗ, СЗ). Переход от азимута к румбу:</p>
+          <ul>
+            <li>1 четверть (0–90°): r = А (СВ)</li>
+            <li>2 четверть (90–180°): r = 180° – А (ЮВ)</li>
+            <li>3 четверть (180–270°): r = А – 180° (ЮЗ)</li>
+            <li>4 четверть (270–360°): r = 360° – А (СЗ)</li>
+          </ul>
+          <p><strong>Пример:</strong> А = 135° → r = 45° ЮВ.</p>
+          <p>Для перехода от румба к азимуту применяются обратные формулы.</p>
+        </div>
+      </div>
+      <!-- Занятие 13 (СРСП) -->
+      <div class="lesson-item" data-lesson="13"><div class="lesson-header"><span class="num">13</span><span class="name">Ориентирование по осевому меридиану. Дирекционный угол</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Дирекционный угол (α)</strong> — угол между северным направлением осевого меридиана зоны Гаусса-Крюгера и направлением линии. Измеряется по часовой стрелке от 0° до 360°. Связь с азимутом: А = α + γ (сближение меридианов).</p></div></div>
+      <!-- Занятие 14 (Практика) -->
+      <div class="lesson-item" data-lesson="14"><div class="lesson-header"><span class="num">14</span><span class="name">Практическое занятие №5: Определение координат</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Цель:</strong> освоить определение прямоугольных координат (X, Y) по карте.</div><ul><li>Найдите координаты 3 точек на карте 1:10000.</li><li>Определите географические координаты (широту и долготу).</li><li>Вычислите расстояние между точками через приращения.</li></ul></div></div>
+      <!-- Занятие 15 (Практика) -->
+      <div class="lesson-item" data-lesson="15"><div class="lesson-header"><span class="num">15</span><span class="name">Практическое занятие №6: Определение площадей</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Способы:</strong></div><ul><li>Аналитический (по координатам вершин).</li><li>Графический (разбиение на фигуры).</li><li>Механический (планиметр).</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 5 -->
+  <section class="section" id="sec5">
+    <h2>5. Геодезические задачи <span class="badge">зан. 16–18</span></h2>
+    <div class="desc">Прямая и обратная геодезические задачи.</div>
+    <div class="lesson-list" data-section="5">
+      <!-- Занятие 16 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="16">
+        <div class="lesson-header"><span class="num">16</span><span class="name">Прямая и обратная геодезические задачи</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Прямая геодезическая задача (ПГЗ)</strong> — по известным координатам одной точки (X₁, Y₁), дирекционному углу (α) и горизонтальному расстоянию (d) вычисляют координаты второй точки (X₂, Y₂).</p>
+          <p><strong>Формулы:</strong><br>
+          ΔX = d · cos α<br>
+          ΔY = d · sin α<br>
+          X₂ = X₁ + ΔX<br>
+          Y₂ = Y₁ + ΔY</p>
+          <p><strong>Пример:</strong> X₁ = 500.00, Y₁ = 200.00, α = 45°30', d = 120.00 м.<br>
+          cos 45°30' ≈ 0.7009, sin ≈ 0.7133.<br>
+          ΔX = 120 · 0.7009 = 84.11 м<br>
+          ΔY = 120 · 0.7133 = 85.60 м<br>
+          X₂ = 584.11 м, Y₂ = 285.60 м.</p>
+          <p><strong>Обратная геодезическая задача (ОГЗ)</strong> — по известным координатам двух точек (X₁,Y₁) и (X₂,Y₂) вычисляют дирекционный угол α и горизонтальное расстояние d.</p>
+          <p><strong>Формулы:</strong><br>
+          dx = X₂ – X₁, dy = Y₂ – Y₁<br>
+          d = √(dx² + dy²)<br>
+          α = arctg(dy / dx) с учётом четверти, в которой находится линия.</p>
+          <p><strong>Правило определения четверти:</strong></p>
+          <ul>
+            <li>dx>0, dy>0 → 1 четв. (α = arctg(|dy/dx|))</li>
+            <li>dx<0, dy>0 → 2 четв. (α = 180° – arctg(|dy/dx|))</li>
+            <li>dx<0, dy<0 → 3 четв. (α = 180° + arctg(|dy/dx|))</li>
+            <li>dx>0, dy<0 → 4 четв. (α = 360° – arctg(|dy/dx|))</li>
+          </ul>
+          <p><strong>Пример ОГЗ:</strong> X₁=1250, Y₁=800; X₂=1340.5, Y₂=920.75.<br>
+          dx=90.5, dy=120.75. d=√(90.5²+120.75²)=150.25 м.<br>
+          α = arctg(120.75/90.5)=53.1° (1 четверть).</p>
+          <p>Решение этих задач — основа для вычисления координат в теодолитных и тахеометрических ходах.</p>
+        </div>
+      </div>
+      <!-- Занятие 17 (Практика) -->
+      <div class="lesson-item" data-lesson="17"><div class="lesson-header"><span class="num">17</span><span class="name">Практическое занятие №7: Прямая задача</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Исходные:</strong> X₁=500.00, Y₁=200.00, α=45°30', d=120.00 м.</div><ul><li>Вычислить приращения координат.</li><li>Найти X₂, Y₂.</li><li>Выполнить контроль обратной задачей.</li></ul></div></div>
+      <!-- Занятие 18 (Практика) -->
+      <div class="lesson-item" data-lesson="18"><div class="lesson-header"><span class="num">18</span><span class="name">Практическое занятие №8: Обратная задача</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Исходные:</strong> X₁=1250.00, Y₁=800.00; X₂=1340.50, Y₂=920.75.</div><ul><li>Вычислить dx, dy, d.</li><li>Определить румб и дирекционный угол.</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 6 -->
+  <section class="section" id="sec6">
+    <h2>6. Погрешности и линейные измерения <span class="badge">зан. 19–20</span></h2>
+    <div class="desc">Погрешности, линейные измерения, вешение линий.</div>
+    <div class="lesson-list" data-section="6">
+      <!-- Занятие 19 (СРСП) -->
+      <div class="lesson-item" data-lesson="19"><div class="lesson-header"><span class="num">19</span><span class="name">Основные понятия о погрешностях</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Классификация:</strong> грубые, систематические, случайные. <strong>Свойства случайных</strong>: компенсация, возрастание с числом измерений. <strong>Средняя квадратическая ошибка</strong> m = √([Δ²]/n). Предельная ошибка Δпред = 2m.</p></div></div>
+      <!-- Занятие 20 (Практика) -->
+      <div class="lesson-item" data-lesson="20"><div class="lesson-header"><span class="num">20</span><span class="name">Практическое занятие №9: Линейные измерения</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Задания:</strong></div><ul><li>Закрепить точки, вешение линии.</li><li>Измерить расстояние в прямом и обратном направлениях.</li><li>Определить непреступное расстояние (построением треугольника).</li><li>Оценить относительную погрешность.</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 7 -->
+  <section class="section" id="sec7">
+    <h2>7. Теодолитная съёмка <span class="badge">зан. 21–31</span></h2>
+    <div class="desc">Теодолитная съёмка, устройство теодолитов, поверки, углы, ходы, обработка.</div>
+    <div class="lesson-list" data-section="7">
+      <!-- Занятие 21 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="21">
+        <div class="lesson-header"><span class="num">21</span><span class="name">Понятие о съемках. Теодолитная съемка</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Теодолитная съёмка</strong> — это вид наземной горизонтальной съёмки, при котором плановое положение точек определяется путём измерения горизонтальных углов (теодолитом) и длин линий (мерной лентой или дальномером). Высоты точек чаще всего определяются отдельно (нивелированием). Применяется для создания планов небольших участков (до нескольких км²) в масштабах 1:500 – 1:5000.</p>
+          <p><strong>Теодолит</strong> — основной прибор для измерения горизонтальных и вертикальных углов. Состоит из:</p>
+          <ul>
+            <li><strong>Горизонтального круга (лимба)</strong> — для измерения горизонтальных углов.</li>
+            <li><strong>Вертикального круга</strong> — для измерения углов наклона.</li>
+            <li><strong>Зрительной трубы</strong> — для наведения на визирные цели (вехи, марки).</li>
+            <li><strong>Уровней</strong> (цилиндрических и круглых) для приведения прибора в горизонтальное положение.</li>
+            <li><strong>Отсчётных устройств</strong> (микроскопов или цифровых дисплеев) для снятия отсчётов по лимбам.</li>
+          </ul>
+          <p><strong>Классификация теодолитов:</strong> по точности (технические, точные, высокоточные), по конструкции (оптические, электронные).</p>
+          <p><strong>Теодолитный ход</strong> — последовательность точек, в которых измеряются углы и расстояния между ними. Ходы бывают <strong>замкнутые</strong> (полигон) и <strong>разомкнутые</strong> (опирающиеся на исходные пункты).</p>
+          <p><strong>Этапы теодолитной съёмки:</strong></p>
+          <ol>
+            <li>Рекогносцировка местности, выбор точек хода.</li>
+            <li>Закрепление точек на местности (колышки, металлические штыри).</li>
+            <li>Измерение углов и длин сторон.</li>
+            <li>Камеральная обработка: вычисление дирекционных углов, приращений координат, уравнивание невязок, составление плана.</li>
+          </ol>
+        </div>
+      </div>
+      <!-- Занятия 22-31 (практики и СРСП) — оставляем с прежним содержанием (уже достаточно подробно) -->
+      <div class="lesson-item" data-lesson="22"><div class="lesson-header"><span class="num">22</span><span class="name">Практическое занятие №10: Оптический теодолит</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Изучение устройства (Т30):</strong></div><ul><li>Ознакомиться с лимбами, алидадой, микроскопом.</li><li>Потренироваться в наведении и снятии отсчётов.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="23"><div class="lesson-header"><span class="num">23</span><span class="name">Практическое занятие №11: Электронный теодолит</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Работа с электронным тахеометром:</strong></div><ul><li>Изучить панель управления.</li><li>Освоить измерение углов и расстояний.</li><li>Сравнить точность.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="24"><div class="lesson-header"><span class="num">24</span><span class="name">Испытания и поверки теодолита</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Поверки:</strong> 1) уровень при ГК перпендикулярен оси вращения; 2) визирная ось перпендикулярна оси трубы; 3) ось вращения трубы перпендикулярна оси вращения прибора. Юстировка исправительными винтами.</p></div></div>
+      <div class="lesson-item" data-lesson="25"><div class="lesson-header"><span class="num">25</span><span class="name">Практическое занятие №12: Измерение горизонтальных углов</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Методика:</strong></div><ul><li>Установка теодолита, центрирование.</li><li>Снятие отсчётов на заднюю и переднюю точки.</li><li>Вычисление угла, повтор при ПК, среднее.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="26"><div class="lesson-header"><span class="num">26</span><span class="name">Измерение углов наклона. Место нуля</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Вертикальный угол</strong> — угол между визирной осью и горизонтом. <strong>Место нуля (МО)</strong> — отсчёт при горизонтальной визирной оси. ν = КЛ – МО. Измеряется при КЛ и КП.</p></div></div>
+      <div class="lesson-item" data-lesson="27"><div class="lesson-header"><span class="num">27</span><span class="name">Практическое занятие №13: Измерение углов теодолитом</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Комплексная работа:</strong></div><ul><li>Измерьте горизонтальные углы замкнутого хода.</li><li>Измерьте вертикальные углы.</li><li>Рассчитайте МО, составьте журнал.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="28"><div class="lesson-header"><span class="num">28</span><span class="name">Нитяной дальномер</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Принцип:</strong> D = K·n + c, K=100, n — разность отсчётов по дальномерным нитям. Для наклонных: d = D·cos²ν. Точность 1/300–1/400.</p></div></div>
+      <div class="lesson-item" data-lesson="29"><div class="lesson-header"><span class="num">29</span><span class="name">Практическое занятие №14: Проложение ходов</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Обработка:</strong></div><ul><li>Вычислить сумму углов полигона, угловую невязку.</li><li>Вычислить дирекционные углы сторон.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="30"><div class="lesson-header"><span class="num">30</span><span class="name">Практическое занятие №15: Ведомость координат</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Задание:</strong></div><ul><li>Составить ведомость вычислений координат.</li><li>Найти невязки fx, fy, fs, оценить точность.</li><li>Распределить невязки, получить уравненные координаты.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="31"><div class="lesson-header"><span class="num">31</span><span class="name">Практическое занятие №16: Составление плана</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Построение:</strong></div><ul><li>Нанести точки хода по координатам.</li><li>Нанести ситуацию по абрисам.</li><li>Оформить план.</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 8 -->
+  <section class="section" id="sec8">
+    <h2>8. Нивелирование <span class="badge">зан. 32–39</span></h2>
+    <div class="desc">Нивелирование, нивелиры, трассирование, профили.</div>
+    <div class="lesson-list" data-section="8">
+      <!-- Занятие 32 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="32">
+        <div class="lesson-header"><span class="num">32</span><span class="name">Понятие о нивелировании. Способы. Геометрическое нивелирование</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Нивелирование</strong> — совокупность измерений для определения превышений между точками и вычисления их высот (отметок).</p>
+          <p><strong>Способы нивелирования:</strong></p>
+          <ul>
+            <li><strong>Геометрическое</strong> — с помощью нивелира и реек. Основано на горизонтальном луче визирования. Самый точный метод (погрешность 1–5 мм на км хода).</li>
+            <li><strong>Тригонометрическое</strong> — измеряют вертикальный угол и расстояние (тахеометром). Менее точное, но быстрое.</li>
+            <li><strong>Барометрическое</strong> — по изменению атмосферного давления. Точность низкая (1–5 м).</li>
+            <li><strong>Спутниковое (GNSS)</strong> — определяет эллипсоидальные высоты, требующие перехода к нормальным высотам.</li>
+          </ul>
+          <p><strong>Геометрическое нивелирование</strong> выполняется из середины (основной способ): нивелир устанавливается примерно посередине между точками А и В. На точках вертикально ставятся рейки. Берут отсчёты по задней рейке (a) и передней (b). Превышение h = a – b (если a > b, то точка В выше). Отметка точки В: Hв = Hа + h.</p>
+          <p><strong>Нивелир</strong> — прибор, дающий горизонтальную визирную ось. Основные типы: с цилиндрическим уровнем (Н-3), с компенсатором (Н-10), цифровые (кодовые рейки).</p>
+          <p><strong>Поверки нивелира:</strong> главное условие — ось уровня должна быть параллельна визирной оси (для нивелиров с уровнем), или компенсатор должен работать правильно.</p>
+          <p><strong>Нивелирные ходы</strong> прокладывают между реперами (точками с известными отметками). Различают замкнутые и разомкнутые ходы. Допустимая невязка для технического нивелирования: fh доп = 50√L (мм), где L — длина хода в км.</p>
+        </div>
+      </div>
+      <!-- Занятия 33-39 (практики и СРСП) — оставляем -->
+      <div class="lesson-item" data-lesson="33"><div class="lesson-header"><span class="num">33</span><span class="name">Практическое занятие №17: Техническое нивелирование</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Ход работы:</strong></div><ul><li>Проложить нивелирный ход длиной 200–300 м.</li><li>Снимать отсчёты по чёрной и красной сторонам.</li><li>Вычислять превышения, вести журнал.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="34"><div class="lesson-header"><span class="num">34</span><span class="name">Практическое занятие №18: Устройство нивелира. Поверки</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Изучение прибора:</strong></div><ul><li>Основные части, работа с рейкой.</li><li>Поверка главного условия.</li><li>Двойное нивелирование для контроля.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="35"><div class="lesson-header"><span class="num">35</span><span class="name">Трассирование линейных сооружений</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Трассирование</strong> — выбор оси дороги, канала, трубопровода. Этапы: камеральный (по карте), полевой (разбивка пикетажа, углов поворота). Пикет — 100 м, плюсовые точки — характерные места.</p></div></div>
+      <div class="lesson-item" data-lesson="36"><div class="lesson-header"><span class="num">36</span><span class="name">Практическое занятие №19: Ведомость высот</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Задание:</strong></div><ul><li>Вычислить отметки пикетов и плюсовых точек.</li><li>Заполнить ведомость высот.</li><li>Контроль сумм превышений.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="37"><div class="lesson-header"><span class="num">37</span><span class="name">Практическое занятие №20: Невязка высот</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Уравнивание:</strong></div><ul><li>Определить невязку fh = Σhср – (Hк – Hн).</li><li>Сравнить с допустимой.</li><li>Распределить пропорционально длинам.</li></ul></div></div>
+      <div class="lesson-item" data-lesson="38"><div class="lesson-header"><span class="num">38</span><span class="name">Продольный и поперечный профили</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Продольный профиль</strong> — разрез вдоль оси, <strong>поперечный</strong> — перпендикулярно. Строятся в разных масштабах.</p></div></div>
+      <div class="lesson-item" data-lesson="39"><div class="lesson-header"><span class="num">39</span><span class="name">Практическое занятие №21: Построение профиля по карте</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Порядок:</strong></div><ul><li>На карте наметить трассу, снять отметки.</li><li>Построить профиль на миллиметровке.</li><li>Нанести грунты и покрытия.</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 9 -->
+  <section class="section" id="sec9">
+    <h2>9. Тахеометрическая съёмка <span class="badge">зан. 40–43</span></h2>
+    <div class="desc">Тахеометрия, электронные тахеометры, обработка на ПК.</div>
+    <div class="lesson-list" data-section="9">
+      <!-- Занятие 40 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="40">
+        <div class="lesson-header"><span class="num">40</span><span class="name">Сущность тахеометрической съёмки</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Тахеометрическая съёмка</strong> (от греч. ταχύς — быстрый) — метод одновременного определения планового и высотного положения точек местности. Применяется для создания крупномасштабных планов (1:500–1:5000) в сложных условиях рельефа.</p>
+          <p><strong>Принцип:</strong> с одной станции (точки с известными координатами и высотой) измеряют горизонтальные и вертикальные углы, а также расстояния до реечных точек (пикетов). По этим данным вычисляют координаты X, Y и высоту H каждой точки.</p>
+          <p><strong>Приборы:</strong> тахеометры (оптические и электронные). Современные электронные тахеометры (Leica, Trimble, Sokkia) автоматически измеряют все параметры и записывают их в память.</p>
+          <p><strong>Основные формулы тахеометрии:</strong><br>
+          D = K·n·cos²ν (для оптического дальномера)<br>
+          h' = D·tg ν (превышение относительно станции)<br>
+          Hпикет = Hстанции + h' – высота прибора + высота рейки (если измеряли по рейке).</p>
+          <p><strong>Порядок работы:</strong></p>
+          <ol>
+            <li>Установка тахеометра над точкой станции, измерение высоты прибора.</li>
+            <li>Ориентирование по начальному направлению.</li>
+            <li>Съёмка пикетов (обычно 5–10 точек на 1 га) в характерных точках рельефа и контуров.</li>
+            <li>Запись данных в журнал или в память прибора.</li>
+          </ol>
+          <p><strong>Обработка на ПК</strong> позволяет автоматически строить горизонтали, оформлять план и получать ведомости координат.</p>
+        </div>
+      </div>
+      <!-- Занятия 41-43 -->
+      <div class="lesson-item" data-lesson="41"><div class="lesson-header"><span class="num">41</span><span class="name">Практическое занятие №22: Электронный тахеометр</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Изучение:</strong></div><ul><li>Включение, центрирование, горизонтирование.</li><li>Настройка призмы, создание станции.</li><li>Измерения в режиме «Полярных координат».</li></ul></div></div>
+      <div class="lesson-item" data-lesson="42"><div class="lesson-header"><span class="num">42</span><span class="name">Съемка ситуации и рельефа</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Правила:</strong> густота пикетов зависит от сложности рельефа (не более 5–10 м между ними). Фиксируются все контуры. Запись: номер, углы, расстояния.</p></div></div>
+      <div class="lesson-item" data-lesson="43"><div class="lesson-header"><span class="num">43</span><span class="name">Практическое занятие №23: Обработка на ПК</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Камеральная обработка:</strong></div><ul><li>Загрузить данные с тахеометра.</li><li>Использовать ПО (CREDO, AutoCAD Civil).</li><li>Построить горизонтали, оформить план.</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 10 -->
+  <section class="section" id="sec10">
+    <h2>10. Геодезические сети и номенклатура <span class="badge">зан. 44–47</span></h2>
+    <div class="desc">ГГС, сети сгущения, номенклатура карт.</div>
+    <div class="lesson-list" data-section="10">
+      <!-- Занятие 44 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="44">
+        <div class="lesson-header"><span class="num">44</span><span class="name">Государственные геодезические сети</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Государственная геодезическая сеть (ГГС)</strong> — основа всех геодезических работ на территории страны. Она представляет собой совокупность пунктов, закреплённых на местности специальными центрами, с известными координатами и высотами.</p>
+          <p><strong>Классы ГГС:</strong></p>
+          <ul>
+            <li><strong>1 класс</strong> — высший, длины сторон 20–40 км, средняя ошибка измерения углов 0,3″–0,5″. Строится методами триангуляции или трилатерации.</li>
+            <li><strong>2 класс</strong> — длины 10–20 км, ошибка 1″–2″.</li>
+            <li><strong>3 класс</strong> — длины 5–15 км, ошибка 2″–4″.</li>
+            <li><strong>4 класс</strong> — длины 2–8 км, ошибка 5″.</li>
+          </ul>
+          <p>Для высотной основы используется <strong>государственная нивелирная сеть</strong> I, II, III, IV классов, где определяются нормальные высоты.</p>
+          <p>Современные методы — спутниковые геодезические сети (GNSS), которые постепенно вытесняют классические.</p>
+        </div>
+      </div>
+      <!-- Занятие 45 (СРСП) -->
+      <div class="lesson-item" data-lesson="45"><div class="lesson-header"><span class="num">45</span><span class="name">Сети сгущения и съемочные сети</span><span class="type srsp">СРСП</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><p><strong>Сети сгущения</strong> (1–4 разряда) создаются от пунктов ГГС. <strong>Съёмочные сети</strong> — теодолитные, нивелирные, тахеометрические ходы, непосредственно используемые для съёмки.</p></div></div>
+      <!-- Занятие 46 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="46">
+        <div class="lesson-header"><span class="num">46</span><span class="name">Номенклатура листов топографических карт</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Номенклатура</strong> — система обозначения листов топографических карт, основанная на международной разграфке.</p>
+          <p><strong>Основа:</strong> лист масштаба 1:1 000 000. Весь земной шар делится на пояса через 4° по широте (обозначаются буквами латинского алфавита от A до V, исключая I и O) и колонны через 6° по долготе (обозначаются цифрами от 1 до 60).</p>
+          <p><strong>Пример номенклатуры:</strong> N-38 — лист 1:1 000 000, где N — пояс (северный), 38 — колонна.</p>
+          <p><strong>Разграфка для более крупных масштабов:</strong></p>
+          <ul>
+            <li>1:500 000 — лист миллионной делится на 4 части (N-38-A, N-38-B, N-38-C, N-38-D).</li>
+            <li>1:200 000 — на 36 частей (N-38-I, N-38-II, … N-XXXVI).</li>
+            <li>1:100 000 — на 144 части (N-38-1, N-38-2, … N-38-144).</li>
+            <li>1:50 000 — лист стотысячной делится на 4 части (N-38-1-А, N-38-1-Б, …).</li>
+            <li>1:25 000 — лист пятидесятитысячной на 4 части (N-38-1-А-а, …).</li>
+          </ul>
+          <p><strong>Задачи:</strong> по координатам определить номенклатуру листа, а по номенклатуре — географические координаты рамок листа.</p>
+        </div>
+      </div>
+      <!-- Занятие 47 (Практика) -->
+      <div class="lesson-item" data-lesson="47"><div class="lesson-header"><span class="num">47</span><span class="name">Практическое занятие №24: Определение номенклатуры</span><span class="type practice">Прак</span><span class="toggle-icon">▼</span></div><div class="lesson-content"><div class="task-box"><strong>Задания:</strong></div><ul><li>По координатам определить номенклатуру 1:100 000.</li><li>По номенклатуре N-38-56-А определить координаты рамок.</li><li>Составить таблицу разграфки для 1:50 000 и 1:25 000.</li></ul></div></div>
+    </div>
+  </section>
+
+  <!-- РАЗДЕЛ 11 -->
+  <section class="section" id="sec11">
+    <h2>11. Техника безопасности <span class="badge">зан. 48</span></h2>
+    <div class="desc">Охрана труда при инженерно-геодезических работах.</div>
+    <div class="lesson-list" data-section="11">
+      <!-- Занятие 48 (Лекция) — расширено -->
+      <div class="lesson-item" data-lesson="48">
+        <div class="lesson-header"><span class="num">48</span><span class="name">Основы ТБ при геодезических работах</span><span class="type lecture">Лек</span><span class="toggle-icon">▼</span></div>
+        <div class="lesson-content">
+          <p><strong>Общие требования:</strong> все лица, выполняющие геодезические работы, должны проходить медицинский осмотр и инструктаж по охране труда (вводный, первичный на рабочем месте, повторный).</p>
+          <p><strong>Основные опасные факторы:</strong></p>
+          <ul>
+            <li>Движение транспорта на дорогах.</li>
+            <li>Падение с высоты (при работе на вышках, крышах).</li>
+            <li>Поражение электрическим током (при работе вблизи ЛЭП).</li>
+            <li>Неблагоприятные погодные условия (гроза, туман, жара).</li>
+          </ul>
+          <p><strong>Правила безопасности при полевых работах:</strong></p>
+          <ul>
+            <li>При работе на дорогах надевать сигнальные жилеты, выставлять знаки ограждения.</li>
+            <li>Переносить приборы только в футлярах, предохраняя от ударов и влаги.</li>
+            <li>При грозе немедленно прекратить работы, укрыться в помещении или автомобиле, приборы обесточить и накрыть.</li>
+            <li>При работе с рейками избегать касания проводов ЛЭП, использовать диэлектрические калоши.</li>
+            <li>Запрещается работать в одиночку в труднодоступной местности.</li>
+          </ul>
+          <p><strong>Пожарная безопасность:</strong> запрещается разводить костры, курить вблизи горючих материалов.</p>
+          <p><strong>Первая помощь:</strong> каждый член бригады должен знать приёмы оказания первой помощи при травмах, переломах, ожогах.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- СВОДКА -->
+  <div class="summary">
+    <h3>📊 Распределение учебной нагрузки</h3>
+    <table>
+      <thead><tr><th>Вид занятий</th><th>Количество часов</th></tr></thead>
+      <tbody>
+        <tr><td>Лекции</td><td>24</td></tr>
+        <tr><td>Практические занятия</td><td>48</td></tr>
+        <tr><td>СРСП</td><td>24</td></tr>
+        <tr class="total"><td><strong>Итого</strong></td><td><strong>96</strong></td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:14px; color:#2a5a6a;">✅ Всего 48 занятий. Кликните по любому пункту, чтобы изучить материалы лекции или практики.</p>
+  </div>
+
+  <footer class="footer">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230097b2'/%3E%3Ccircle cx='50' cy='50' r='40' fill='%23f9c20e'/%3E%3Cg fill='%230097b2'%3E%3Ccircle cx='30' cy='30' r='6'/%3E%3Ccircle cx='70' cy='30' r='6'/%3E%3Ccircle cx='30' cy='70' r='6'/%3E%3Ccircle cx='70' cy='70' r='6'/%3E%3C/g%3E%3C/svg%3E" alt="РК" style="height:24px;">
+    Цифровой образовательный ресурс Республики Казахстан — Электронный учебник по дисциплине «Топография»
+    <br><span style="font-size:0.8rem; color:#5a7a8a;">© 2026 — Все материалы разработаны в соответствии с типовой программой курса</span>
+  </footer>
+</div>
+
+<script>
+  // Переключение одного занятия
+  document.querySelectorAll('.lesson-item').forEach(item => {
+    const header = item.querySelector('.lesson-header');
+    header.addEventListener('click', function(e) {
+      item.classList.toggle('open');
+    });
+  });
+
+  // Переключение всех
+  let allOpen = false;
+  function toggleAll() {
+    const items = document.querySelectorAll('.lesson-item');
+    const btn = document.querySelector('.toggle-all-btn');
+    allOpen = !allOpen;
+    items.forEach(el => {
+      if (allOpen) el.classList.add('open');
+      else el.classList.remove('open');
+    });
+    btn.textContent = allOpen ? 'Свернуть всё' : 'Развернуть всё';
+  }
+
+  // Плавная навигация по якорям
+  document.querySelectorAll('.toc-grid a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
